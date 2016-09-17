@@ -16,5 +16,4 @@ class BookController extends Controller
         $m3_result->categorys = $categorys;
         return $m3_result->tojson();
     }
-
 }

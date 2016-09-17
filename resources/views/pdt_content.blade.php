@@ -37,13 +37,43 @@
     </div>
     <div class="bk_fix_bottom">
         <div class="bk_half_area">
-            <botton class="weui_btn weui_btn_primary">加入购物车</botton>
+            <botton class="weui_btn weui_btn_primary" onclick="__addcart()">加入购物车</botton>
         </div>
         <div class="bk_half_area">
-            <botton class="weui_btn weui_btn_default">结算(<span id="cart_num" class="m3_price"></span>)</botton>
+            <botton class="weui_btn weui_btn_default">结算(<span id="cart_num" class="m3_price">{{$count}}</span>)</botton>
         </div>
     </div>
 @endsection
 @section('my-js')
     <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        function __addcart()
+        {
+            var product_id = {{$product->id}};
+            $.ajax({
+                type: 'get',
+                url:'/service/cart/add/'+ product_id,
+                dateType:'json',
+                success:function (data){
+                    if (data === null) {
+                        $('.bk_toptips').show();
+                        $('.bk_toptips span').html('服务器错误');
+                        setInterval(function () {
+                            $('.bk_toptips').hide();
+                        }, 5000);
+                    }
+                    if (data.status !== 0) {
+                        $('.bk_toptips').show();
+                        $('.bk_toptips span').html(data.message);
+                        setInterval(function () {
+                            $('.bk_toptips').hide();
+                        }, 5000);
+                    }
+                    var num = $('#cart_num').html();
+                    if (num == '') num=0;
+                    $('#cart_num').html(Number(num) + 1);
+                }
+            });
+        }
+    </script>
 @endsection
